@@ -19,7 +19,7 @@ import { Alert, message, Tabs } from 'antd';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
 import styles from './index.less';
-import { userLoginUsingPOST } from '@/services/yuapi-backend/userController';
+import { userLoginUsingPost } from '@/services/api-backend/userController';
 
 const LoginMessage: React.FC<{
   content: string;
@@ -42,7 +42,7 @@ const Login: React.FC = () => {
   const handleSubmit = async (values: API.UserLoginRequest) => {
     try {
       // 登录
-      const res = await userLoginUsingPOST({
+      const res = await userLoginUsingPost({
         ...values,
       });
       if (res.data) {

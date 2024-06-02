@@ -11,13 +11,13 @@ import { Button, Drawer, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { SortOrder } from 'antd/es/table/interface';
 import {
-  addInterfaceInfoUsingPOST,
-  deleteInterfaceInfoUsingPOST,
-  listInterfaceInfoByPageUsingGET,
-  offlineInterfaceInfoUsingPOST,
-  onlineInterfaceInfoUsingPOST,
-  updateInterfaceInfoUsingPOST
-} from '@/services/yuapi-backend/interfaceInfoController';
+  addInterfaceInfoUsingPost,
+  deleteInterfaceInfoUsingPost,
+  listInterfaceInfoByPageUsingGet,
+  offlineInterfaceInfoUsingPost,
+  onlineInterfaceInfoUsingPost,
+  updateInterfaceInfoUsingPost
+} from '@/services/api-backend/interfaceInfoController';
 import CreateModal from '@/pages/Admin/InterfaceInfo/components/CreateModal';
 import UpdateModal from "@/pages/Admin/InterfaceInfo/components/UpdateModal";
 
@@ -45,7 +45,7 @@ const TableList: React.FC = () => {
   const handleAdd = async (fields: API.InterfaceInfo) => {
     const hide = message.loading('正在添加');
     try {
-      await addInterfaceInfoUsingPOST({
+      await addInterfaceInfoUsingPost({
         ...fields,
       });
       hide();
@@ -71,7 +71,7 @@ const TableList: React.FC = () => {
     }
     const hide = message.loading('修改中');
     try {
-      await updateInterfaceInfoUsingPOST({
+      await updateInterfaceInfoUsingPost({
         id: currentRow.id,
         ...fields
       });
@@ -94,7 +94,7 @@ const TableList: React.FC = () => {
     const hide = message.loading('发布中');
     if (!record) return true;
     try {
-      await onlineInterfaceInfoUsingPOST({
+      await onlineInterfaceInfoUsingPost({
         id: record.id
       });
       hide();
@@ -117,7 +117,7 @@ const TableList: React.FC = () => {
     const hide = message.loading('发布中');
     if (!record) return true;
     try {
-      await offlineInterfaceInfoUsingPOST({
+      await offlineInterfaceInfoUsingPost({
         id: record.id
       });
       hide();
@@ -141,7 +141,7 @@ const TableList: React.FC = () => {
     const hide = message.loading('正在删除');
     if (!record) return true;
     try {
-      await deleteInterfaceInfoUsingPOST({
+      await deleteInterfaceInfoUsingPost({
         id: record.id
       });
       hide();
@@ -304,7 +304,7 @@ const TableList: React.FC = () => {
           sort: Record<string, SortOrder>,
           filter: Record<string, React.ReactText[] | null>,
         ) => {
-          const res: any = await listInterfaceInfoByPageUsingGET({
+          const res: any = await listInterfaceInfoByPageUsingGet({
             ...params,
           });
           if (res?.data) {

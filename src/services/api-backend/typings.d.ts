@@ -17,9 +17,9 @@ declare namespace API {
     message?: string;
   };
 
-  type BaseResponseListPost = {
+  type BaseResponseListUserInterfaceInfo = {
     code?: number;
-    data?: Post[];
+    data?: UserInterfaceInfo[];
     message?: string;
   };
 
@@ -47,9 +47,9 @@ declare namespace API {
     message?: string;
   };
 
-  type BaseResponsePagePost = {
+  type BaseResponsePageUserInterfaceInfo = {
     code?: number;
-    data?: PagePost;
+    data?: PageUserInterfaceInfo;
     message?: string;
   };
 
@@ -59,15 +59,15 @@ declare namespace API {
     message?: string;
   };
 
-  type BaseResponsePost = {
-    code?: number;
-    data?: Post;
-    message?: string;
-  };
-
   type BaseResponseUser = {
     code?: number;
     data?: User;
+    message?: string;
+  };
+
+  type BaseResponseUserInterfaceInfo = {
+    code?: number;
+    data?: UserInterfaceInfo;
     message?: string;
   };
 
@@ -86,12 +86,12 @@ declare namespace API {
     id?: number;
   };
 
-  type getPostByIdUsingGETParams = {
+  type getUserByIdUsingGETParams = {
     /** id */
     id?: number;
   };
 
-  type getUserByIdUsingGETParams = {
+  type getUserInterfaceInfoByIdUsingGETParams = {
     /** id */
     id?: number;
   };
@@ -103,27 +103,31 @@ declare namespace API {
   type InterfaceInfo = {
     createTime?: string;
     description?: string;
+    host?: string;
     id?: number;
     isDelete?: number;
     method?: string;
     name?: string;
+    protocol?: string;
     requestHeader?: string;
     requestParams?: string;
     responseHeader?: string;
     status?: number;
     updateTime?: string;
-    url?: string;
+    uri?: string;
     userId?: number;
   };
 
   type InterfaceInfoAddRequest = {
     description?: string;
+    host?: string;
     method?: string;
     name?: string;
+    protocol?: string;
     requestHeader?: string;
     requestParams?: string;
     responseHeader?: string;
-    url?: string;
+    uri?: string;
   };
 
   type InterfaceInfoInvokeRequest = {
@@ -133,79 +137,53 @@ declare namespace API {
 
   type InterfaceInfoUpdateRequest = {
     description?: string;
+    host?: string;
     id?: number;
     method?: string;
     name?: string;
+    protocol?: string;
     requestHeader?: string;
     requestParams?: string;
     responseHeader?: string;
     status?: number;
-    url?: string;
+    uri?: string;
   };
 
   type listInterfaceInfoByPageUsingGETParams = {
     current?: number;
     description?: string;
+    host?: string;
     id?: number;
     method?: string;
     name?: string;
     pageSize?: number;
+    protocol?: string;
     requestHeader?: string;
+    requestParams?: string;
     responseHeader?: string;
     sortField?: string;
     sortOrder?: string;
     status?: number;
-    url?: string;
+    uri?: string;
     userId?: number;
   };
 
   type listInterfaceInfoUsingGETParams = {
     current?: number;
     description?: string;
+    host?: string;
     id?: number;
     method?: string;
     name?: string;
     pageSize?: number;
+    protocol?: string;
     requestHeader?: string;
+    requestParams?: string;
     responseHeader?: string;
     sortField?: string;
     sortOrder?: string;
     status?: number;
-    url?: string;
-    userId?: number;
-  };
-
-  type listPostByPageUsingGETParams = {
-    age?: number;
-    contact?: string;
-    content?: string;
-    current?: number;
-    education?: string;
-    gender?: number;
-    job?: string;
-    loveExp?: string;
-    pageSize?: number;
-    place?: string;
-    reviewStatus?: number;
-    sortField?: string;
-    sortOrder?: string;
-    userId?: number;
-  };
-
-  type listPostUsingGETParams = {
-    age?: number;
-    contact?: string;
-    content?: string;
-    current?: number;
-    education?: string;
-    gender?: number;
-    job?: string;
-    loveExp?: string;
-    pageSize?: number;
-    place?: string;
-    reviewStatus?: number;
-    sortField?: string;
-    sortOrder?: string;
+    uri?: string;
     userId?: number;
   };
 
@@ -222,6 +200,19 @@ declare namespace API {
     userAvatar?: string;
     userName?: string;
     userRole?: string;
+  };
+
+  type listUserInterfaceInfoByPageUsingGETParams = {
+    current?: number;
+    id?: number;
+    interfaceInfoId?: number;
+    leftNum?: number;
+    pageSize?: number;
+    sortField?: string;
+    sortOrder?: string;
+    status?: number;
+    totalNum?: number;
+    userId?: number;
   };
 
   type listUserUsingGETParams = {
@@ -335,14 +326,14 @@ declare namespace API {
     total?: number;
   };
 
-  type PagePost = {
+  type PageUserInterfaceInfo = {
     countId?: string;
     current?: number;
     maxLimit?: number;
     optimizeCountSql?: boolean;
     orders?: OrderItem[];
     pages?: number;
-    records?: Post[];
+    records?: UserInterfaceInfo[];
     searchCount?: boolean;
     size?: number;
     total?: number;
@@ -359,54 +350,6 @@ declare namespace API {
     searchCount?: boolean;
     size?: number;
     total?: number;
-  };
-
-  type Post = {
-    age?: number;
-    contact?: string;
-    content?: string;
-    createTime?: string;
-    education?: string;
-    gender?: number;
-    id?: number;
-    isDelete?: number;
-    job?: string;
-    loveExp?: string;
-    photo?: string;
-    place?: string;
-    reviewMessage?: string;
-    reviewStatus?: number;
-    thumbNum?: number;
-    updateTime?: string;
-    userId?: number;
-    viewNum?: number;
-  };
-
-  type PostAddRequest = {
-    age?: number;
-    contact?: string;
-    content?: string;
-    education?: string;
-    gender?: number;
-    job?: string;
-    loveExp?: string;
-    photo?: string;
-    place?: string;
-  };
-
-  type PostUpdateRequest = {
-    age?: number;
-    contact?: string;
-    content?: string;
-    education?: string;
-    gender?: number;
-    id?: number;
-    job?: string;
-    loveExp?: string;
-    photo?: string;
-    place?: string;
-    reviewMessage?: string;
-    reviewStatus?: number;
   };
 
   type User = {
@@ -431,6 +374,48 @@ declare namespace API {
     userName?: string;
     userPassword?: string;
     userRole?: string;
+  };
+
+  type UserInterfaceInfo = {
+    createTime?: string;
+    id?: number;
+    interfaceInfoId?: number;
+    isDelete?: number;
+    leftNum?: number;
+    status?: number;
+    totalNum?: number;
+    updateTime?: string;
+    userId?: number;
+  };
+
+  type UserInterfaceInfoAddRequest = {
+    interfaceInfoId?: number;
+    leftNum?: number;
+    status?: number;
+    totalNum?: number;
+    userId?: number;
+  };
+
+  type UserInterfaceInfoQueryRequest = {
+    current?: number;
+    id?: number;
+    interfaceInfoId?: number;
+    leftNum?: number;
+    pageSize?: number;
+    sortField?: string;
+    sortOrder?: string;
+    status?: number;
+    totalNum?: number;
+    userId?: number;
+  };
+
+  type UserInterfaceInfoUpdateRequest = {
+    id?: number;
+    interfaceInfoId?: number;
+    leftNum?: number;
+    status?: number;
+    totalNum?: number;
+    userId?: number;
   };
 
   type UserLoginRequest = {
