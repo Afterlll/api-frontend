@@ -187,8 +187,18 @@ const TableList: React.FC = () => {
       valueType: 'text',
     },
     {
-      title: 'url',
-      dataIndex: 'url',
+      title: '协议',
+      dataIndex: 'protocol',
+      valueType: 'text',
+    },
+    {
+      title: '主机',
+      dataIndex: 'host',
+      valueType: 'text',
+    },
+    {
+      title: 'uri',
+      dataIndex: 'uri',
       valueType: 'text',
     },
     {

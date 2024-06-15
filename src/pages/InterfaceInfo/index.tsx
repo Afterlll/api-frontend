@@ -3,9 +3,9 @@ import React, { useEffect, useState } from 'react';
 import {Button, Card, Descriptions, Form, message, Input, Spin, Divider} from 'antd';
 import {
   getInterfaceInfoByIdUsingGet,
-  invokeInterfaceInfoUsingPost,
 } from '@/services/api-backend/interfaceInfoController';
-import { useParams } from '@@/exports';
+import {useModel, useParams} from '@@/exports';
+import {sendRequestToGatewayUsingGet, sendRequestToGatewayUsingPost} from "@/services/api/sendToGateway";
 
 /**
  * 主页
@@ -16,9 +16,8 @@ const Index: React.FC = () => {
   const [data, setData] = useState<API.InterfaceInfo>();
   const [invokeRes, setInvokeRes] = useState<any>();
   const [invokeLoading, setInvokeLoading] = useState(false);
-
+  const { initialState, setInitialState } = useModel('@@initialState');
   const params = useParams();
-
   const loadData = async () => {
     if (!params.id) {
       message.error('参数不存在');
@@ -41,21 +40,51 @@ const Index: React.FC = () => {
   }, []);
 
   const onFinish = async (values: any) => {
+    console.log("data=====>", data)
+    console.log("params==========>", params)
     if (!params.id) {
       message.error('接口不存在');
       return;
     }
     setInvokeLoading(true);
-    try {
-      const res = await invokeInterfaceInfoUsingPost({
-        id: params.id,
-        ...values,
-      });
-      setInvokeRes(res.data);
-      message.success('请求成功');
-    } catch (error: any) {
-      message.error('操作失败，' + error.message);
+    // console.log("==========>", `${data.protocol}://${data.host}:8090${data.uri}`)
+    if (data?.method === 'GET') {
+      try {
+        const res = await sendRequestToGatewayUsingGet({
+          interfaceInfo: data,
+          userInfo: initialState?.loginUser,
+        })
+        setInvokeRes(JSON.stringify(res.data));
+        console.log(res.data)
+        message.success('请求成功');
+      } catch (error: any) {
+        message.error('操作失败，' + error.message);
+      }
+    } else if (data?.method === 'POST') {
+      console.log("====>", initialState?.loginUser)
+      try {
+        const res = await sendRequestToGatewayUsingPost({
+          // interfaceInfo: data,
+          interfaceInfo: data,
+          userInfo: initialState?.loginUser,
+          ...values,
+        });
+        setInvokeRes(res.data);
+        message.success('请求成功');
+      } catch (error: any) {
+        message.error('操作失败，' + error.message);
+      }
     }
+    // try {
+    //   const res = await invokeInterfaceInfoUsingPost({
+    //     id: params.id,
+    //     ...values,
+    //   });
+    //   setInvokeRes(res.data);
+    //   message.success('请求成功');
+    // } catch (error: any) {
+    //   message.error('操作失败，' + error.message);
+    // }
     setInvokeLoading(false);
   };
 
@@ -66,7 +95,9 @@ const Index: React.FC = () => {
           <Descriptions title={data.name} column={1}>
             <Descriptions.Item label="接口状态">{data.status ? '开启' : '关闭'}</Descriptions.Item>
             <Descriptions.Item label="描述">{data.description}</Descriptions.Item>
-            <Descriptions.Item label="请求地址">{data.url}</Descriptions.Item>
+            <Descriptions.Item label="协议">{data.protocol}</Descriptions.Item>
+            <Descriptions.Item label="主机">{data.host}</Descriptions.Item>
+            <Descriptions.Item label="请求地址">{data.uri}</Descriptions.Item>
             <Descriptions.Item label="请求方法">{data.method}</Descriptions.Item>
             <Descriptions.Item label="请求参数">{data.requestParams}</Descriptions.Item>
             <Descriptions.Item label="请求头">{data.requestHeader}</Descriptions.Item>

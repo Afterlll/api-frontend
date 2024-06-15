@@ -17,7 +17,6 @@ import {
 import { history, useModel } from '@umijs/max';
 import { Alert, message, Tabs } from 'antd';
 import React, { useState } from 'react';
-import { flushSync } from 'react-dom';
 import styles from './index.less';
 import { userLoginUsingPost } from '@/services/api-backend/userController';
 
@@ -45,6 +44,7 @@ const Login: React.FC = () => {
       const res = await userLoginUsingPost({
         ...values,
       });
+      console.log(res)
       if (res.data) {
         const urlParams = new URL(window.location.href).searchParams;
         history.push(urlParams.get('redirect') || '/');
