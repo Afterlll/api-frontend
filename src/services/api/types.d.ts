@@ -3,6 +3,11 @@ declare namespace SendRequest {
     interfaceInfo?: API.InterfaceInfo;
     userInfo?: API.UserVO;
     userRequestParams?: string;
-    params?: any;
+    params?: SendRequest.SendPrams;
+  };
+
+  type SendPrams = {
+    "fieldName"?: string;
+    "value"?: string;
   };
 }

@@ -1,24 +1,30 @@
-import { Settings as LayoutSettings } from '@ant-design/pro-components';
-
-/**
- * @name
- */
-const Settings: LayoutSettings & {
+import {ProLayoutProps} from '@ant-design/pro-components';
+// {
+//   "navTheme": "light",
+//   "colorPrimary": "#1677FF",
+//   "layout": "top",
+//   "contentWidth": "Fixed",
+//   "fixedHeader": true,
+//   "fixSiderbar": true,
+//   "splitMenus": false,
+//   "pwa": false
+// }
+const Settings: ProLayoutProps & {
   pwa?: boolean;
   logo?: string;
+  navTheme?: string
 } = {
   navTheme: 'light',
-  // 拂晓蓝
-  colorPrimary: '#1890ff',
+  colorPrimary: "#1677FF",
   layout: 'top',
-  contentWidth: 'Fluid',
-  fixedHeader: false,
+  contentWidth: 'Fixed',
+  fixedHeader: true,
   fixSiderbar: true,
   colorWeak: false,
-  title: 'Ant Design Pro',
+  splitMenus: false,
+  title: '江喜原-API 接口开放平台',
   pwa: false,
-  logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
-  iconfontUrl: '',
+  // logo: 'https://img.qimuu.icu/typory/logo.gif',
+  iconfontUrl: 'https://img.qimuu.icu/typory/logo.gif',
 };
-
 export default Settings;

@@ -1,83 +1,126 @@
 import Footer from '@/components/Footer';
-import { getFakeCaptcha } from '@/services/ant-design-pro/login';
+import {Link} from '@@/exports';
 import {
   AlipayCircleOutlined,
   LockOutlined,
-  MobileOutlined,
+  MailOutlined,
   TaobaoCircleOutlined,
   UserOutlined,
   WeiboCircleOutlined,
 } from '@ant-design/icons';
-import {
-  LoginForm,
-  ProFormCaptcha,
-  ProFormCheckbox,
-  ProFormText,
-} from '@ant-design/pro-components';
-import { history, useModel } from '@umijs/max';
-import { Alert, message, Tabs } from 'antd';
-import React, { useState } from 'react';
-import styles from './index.less';
-import { userLoginUsingPost } from '@/services/api-backend/userController';
+import {LoginForm, ProFormCheckbox, ProFormText} from '@ant-design/pro-components';
+import {useEmotionCss} from '@ant-design/use-emotion-css';
+import {Helmet, history, useModel} from '@umijs/max';
+import {message, Tabs} from 'antd';
+import React, {useState} from 'react';
+import Settings from '../../../../config/defaultSettings';
+import {ProFormCaptcha} from "@ant-design/pro-form";
+import {getCaptchaUsingGET, userEmailLoginUsingPOST, userLoginUsingPOST} from "@/services/qiApi-backend/userController";
 
-const LoginMessage: React.FC<{
-  content: string;
-}> = ({ content }) => {
+const ActionIcons = () => {
+  const langClassName = useEmotionCss(({token}) => {
+    return {
+      marginLeft: '8px',
+      color: 'rgba(0, 0, 0, 0.2)',
+      fontSize: '24px',
+      verticalAlign: 'middle',
+      cursor: 'pointer',
+      transition: 'color 0.3s',
+      '&:hover': {
+        color: token.colorPrimaryActive,
+      },
+    };
+  });
   return (
-    <Alert
-      style={{
-        marginBottom: 24,
-      }}
-      message={content}
-      type="error"
-      showIcon
-    />
+    <>
+      <AlipayCircleOutlined key="AlipayCircleOutlined" className={langClassName}/>
+      <TaobaoCircleOutlined key="TaobaoCircleOutlined" className={langClassName}/>
+      <WeiboCircleOutlined key="WeiboCircleOutlined" className={langClassName}/>
+    </>
   );
 };
+
 const Login: React.FC = () => {
-  const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
-  const [type, setType] = useState<string>('account');
-  const { initialState, setInitialState } = useModel('@@initialState');
+  const [type, setType] = useState<string>('email');
+  const {setInitialState} = useModel('@@initialState');
+  const containerClassName = useEmotionCss(() => {
+    return {
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100vh',
+      overflow: 'auto',
+      backgroundImage:
+        "url('https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/V-_oS6r-i7wAAAAAAAAAAAAAFl94AQBr')",
+      backgroundSize: '100% 100%',
+    };
+  });
+  const doLogin = (res: any) => {
+    if (res.data && res.code === 0) {
+      message.success('登陆成功');
+      setTimeout(() => {
+        const urlParams = new URL(window.location.href).searchParams;
+        history.push(urlParams.get('redirect') || '/');
+      }, 100);
+      setInitialState({loginUser: res.data, settings: Settings});
+    }
+  }
   const handleSubmit = async (values: API.UserLoginRequest) => {
     try {
       // 登录
-      const res = await userLoginUsingPost({
+      const res = await userLoginUsingPOST({
         ...values,
       });
-      console.log(res)
-      if (res.data) {
-        const urlParams = new URL(window.location.href).searchParams;
-        history.push(urlParams.get('redirect') || '/');
-        setInitialState({
-          loginUser: res.data
-        });
-        return;
-      }
+      doLogin(res)
     } catch (error) {
       const defaultLoginFailureMessage = '登录失败，请重试！';
-      console.log(error);
       message.error(defaultLoginFailureMessage);
     }
   };
-  const { status, type: loginType } = userLoginState;
+
+  const handleEmailSubmit = async (values: API.UserEmailLoginRequest) => {
+    try {
+      // 登录
+      const res = await userEmailLoginUsingPOST({
+        ...values,
+      });
+      doLogin(res)
+    } catch (error) {
+      const defaultLoginFailureMessage = '登录失败，请重试！';
+      message.error(defaultLoginFailureMessage);
+    }
+  };
+
   return (
-    <div className={styles.container}>
-      <div className={styles.content}>
+    <div className={containerClassName}>
+      <Helmet>
+        <title>
+          {'登录'}- {Settings.title}
+        </title>
+      </Helmet>
+      <div
+        style={{
+          flex: '1',
+          padding: '32px 0',
+        }}
+      >
         <LoginForm
-          logo={<img alt="logo" src="/logo.svg" />}
-          title="Ant Design"
-          subTitle={'Ant Design 是西湖区最具影响力的 Web 设计规范'}
+          contentStyle={{
+            minWidth: 280,
+            maxWidth: '75vw',
+          }}
+          logo={<img alt="logo" src="/logo.gif"/>}
+          title="江喜原-API 接口开放平台"
+          subTitle={'江喜原-API 接口开放平台致力于提供稳定、安全、高效的接口调用服务'}
           initialValues={{
             autoLogin: true,
           }}
-          actions={[
-            '其他登录方式 :',
-            <AlipayCircleOutlined key="AlipayCircleOutlined" className={styles.icon} />,
-            <TaobaoCircleOutlined key="TaobaoCircleOutlined" className={styles.icon} />,
-            <WeiboCircleOutlined key="WeiboCircleOutlined" className={styles.icon} />,
-          ]}
+          actions={['其他登录方式 :', <ActionIcons key="icons"/>]}
           onFinish={async (values) => {
-            await handleSubmit(values as API.UserLoginRequest);
+            if (type === "account") {
+              await handleSubmit(values as API.UserLoginRequest);
+            } else {
+              await handleEmailSubmit(values as API.UserEmailLoginRequest);
+            }
           }}
         >
           <Tabs
@@ -86,32 +129,29 @@ const Login: React.FC = () => {
             centered
             items={[
               {
+                key: 'email',
+                label: '邮箱账号登录',
+              },
+              {
                 key: 'account',
                 label: '账户密码登录',
               },
-              {
-                key: 'mobile',
-                label: '手机号登录',
-              },
+
             ]}
           />
-
-          {status === 'error' && loginType === 'account' && (
-            <LoginMessage content={'错误的用户名和密码(admin/ant.design)'} />
-          )}
           {type === 'account' && (
             <>
               <ProFormText
                 name="userAccount"
                 fieldProps={{
                   size: 'large',
-                  prefix: <UserOutlined className={styles.prefixIcon} />,
+                  prefix: <UserOutlined/>,
                 }}
-                placeholder={'用户名: admin or user'}
+                placeholder={'请输入账号'}
                 rules={[
                   {
                     required: true,
-                    message: '用户名是必填项！',
+                    message: '账号是必填项！',
                   },
                 ]}
               />
@@ -119,9 +159,9 @@ const Login: React.FC = () => {
                 name="userPassword"
                 fieldProps={{
                   size: 'large',
-                  prefix: <LockOutlined className={styles.prefixIcon} />,
+                  prefix: <LockOutlined/>,
                 }}
-                placeholder={'密码: ant.design'}
+                placeholder={'请输入密码'}
                 rules={[
                   {
                     required: true,
@@ -131,32 +171,30 @@ const Login: React.FC = () => {
               />
             </>
           )}
-
-          {status === 'error' && loginType === 'mobile' && <LoginMessage content="验证码错误" />}
-          {type === 'mobile' && (
+          {type === 'email' && (
             <>
               <ProFormText
                 fieldProps={{
                   size: 'large',
-                  prefix: <MobileOutlined className={styles.prefixIcon} />,
+                  prefix: <MailOutlined/>,
                 }}
-                name="mobile"
-                placeholder={'请输入手机号！'}
+                name="emailAccount"
+                placeholder={'请输入邮箱账号！'}
                 rules={[
                   {
                     required: true,
-                    message: '手机号是必填项！',
+                    message: '邮箱账号是必填项！',
                   },
                   {
-                    pattern: /^1\d{10}$/,
-                    message: '不合法的手机号！',
+                    pattern: /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$/,
+                    message: '不合法的邮箱账号！',
                   },
                 ]}
               />
               <ProFormCaptcha
                 fieldProps={{
                   size: 'large',
-                  prefix: <LockOutlined className={styles.prefixIcon} />,
+                  prefix: <LockOutlined/>,
                 }}
                 captchaProps={{
                   size: 'large',
@@ -168,6 +206,7 @@ const Login: React.FC = () => {
                   }
                   return '获取验证码';
                 }}
+                phoneName={"emailAccount"}
                 name="captcha"
                 rules={[
                   {
@@ -175,14 +214,12 @@ const Login: React.FC = () => {
                     message: '验证码是必填项！',
                   },
                 ]}
-                onGetCaptcha={async (phone) => {
-                  const result = await getFakeCaptcha({
-                    phone,
-                  });
-                  if (result === false) {
-                    return;
+                onGetCaptcha={async (emailAccount) => {
+                  const res = await getCaptchaUsingGET({emailAccount})
+                  if (res.data && res.code === 0) {
+                    message.success("验证码发送成功")
+                    return
                   }
-                  message.success('获取验证码成功！验证码为：1234');
                 }}
               />
             </>
@@ -195,17 +232,18 @@ const Login: React.FC = () => {
             <ProFormCheckbox noStyle name="autoLogin">
               自动登录
             </ProFormCheckbox>
-            <a
+            <Link
+              to={'/user/register'}
               style={{
                 float: 'right',
               }}
             >
-              忘记密码 ?
-            </a>
+              还没账号?点击前往注册
+            </Link>
           </div>
         </LoginForm>
       </div>
-      <Footer />
+      <Footer/>
     </div>
   );
 };

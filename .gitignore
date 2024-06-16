@@ -18,10 +18,8 @@ yarn-error.log
 .idea
 yarn.lock
 package-lock.json
-pnpm-lock.yaml
 *bak
 .vscode
-
 
 # visual studio code
 .history
@@ -40,3 +38,13 @@ screenshot
 .eslintcache
 
 build
+.temp
+.cache
+
+# vuepress
+docs/.vuepress/dist
+
+# 百度链接推送
+urls.txt
+
+
