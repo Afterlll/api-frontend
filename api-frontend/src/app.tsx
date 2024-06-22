@@ -71,7 +71,7 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
           tooltip={"📘 接口在线文档"}
           icon={<FileTextOutlined/>}
           onClick={() => {
-            location.href = "https://doc.qimuu.icu/"
+            location.href = "https://doc.wangkeyao.com/"
           }
           }
         />

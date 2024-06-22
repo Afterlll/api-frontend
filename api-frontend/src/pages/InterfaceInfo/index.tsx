@@ -47,7 +47,7 @@ const InterfaceInfo: React.FC = () => {
   const [totalNum, settotalNum] = useState<number>(0);
   const [javaCode, setJavaCode] = useState<any>();
   const [returnCode, setReturnCode] = useState<any>(returnExample);
-  const docUrl = process.env.NODE_ENV === 'production' ? "https://doc.qimuu.icu" : 'http://localhost:8080'
+  const docUrl = process.env.NODE_ENV === 'production' ? "https://doc.wangkeyao.com" : 'http://localhost:8080'
   const {initialState} = useModel('@@initialState');
   const {loginUser} = initialState || {}
   const loadedData = async () => {

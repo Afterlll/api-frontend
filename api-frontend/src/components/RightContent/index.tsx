@@ -15,7 +15,7 @@ export const Docs = () => {
       className="anticon"
       style={{fontSize: 14, fontWeight: "bold"}}
       onClick={() => {
-        window.open('https://doc.qimuu.icu', '_blank')
+        window.open('https://doc.wangkeyao.com', '_blank')
       }}
     >
         📘 开发者文档
